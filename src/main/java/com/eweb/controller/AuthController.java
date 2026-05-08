@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eweb.dto.AdminDto;
 import com.eweb.dto.LoginRequest;
+import com.eweb.model.Role;
 import com.eweb.model.Status;
 import com.eweb.service.AdminService;
 
@@ -56,5 +57,9 @@ public class AuthController {
 	    public ResponseEntity<?> resetPassword(@RequestBody AdminDto request ) {
 	    	
 	        return adminService.resetPassword(request);
+	    }
+	    @PostMapping("/saveRole")
+	    public  ResponseEntity<?>  saveRole(@RequestBody Role role) {
+	        return adminService.saveRole(role);
 	    }
 }
