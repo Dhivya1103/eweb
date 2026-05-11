@@ -17,6 +17,7 @@ import com.eweb.dao.AdminRepository;
 import com.eweb.model.Admin;
 import com.eweb.model.Role;
 import com.eweb.service.AdminService;
+import com.eweb.model.Status;
 
 
 @RestController
@@ -40,5 +41,11 @@ public class CommonController {
 	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
 
 	        return adminService.getAllRoles();
+	    }
+	    @PostMapping("/logout")
+	    public ResponseEntity<?> logout(Authentication authentication) {
+	        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	        Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());   
+	       	        return ResponseEntity.ok(new Status("200", "User logged out successfully!"));
 	    }
 }

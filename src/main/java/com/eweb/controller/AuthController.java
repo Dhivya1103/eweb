@@ -62,4 +62,5 @@ public class AuthController {
 	    public  ResponseEntity<?>  saveRole(@RequestBody Role role) {
 	        return adminService.saveRole(role);
 	    }
+	   
 }
