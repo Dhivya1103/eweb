@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -103,5 +104,15 @@ public class ProductController {
 	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findProduct(productId);
+	    }
+	  @GetMapping("/findlatestProduct")
+	    public  ResponseEntity<?>  findlatestProduct( @RequestParam(required = false) Long categoryId,
+	            @RequestParam(required = false) String name,
+	            @RequestParam(required = false) Double minPrice,
+	            @RequestParam(required = false) Double maxPrice,
+	            @RequestParam(required = false) String size, Authentication authentication,Pageable pageable) {	    
+	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+	        return productService.findlatestProduct(categoryId, name, minPrice, maxPrice,size ,pageable);
 	    }
 }

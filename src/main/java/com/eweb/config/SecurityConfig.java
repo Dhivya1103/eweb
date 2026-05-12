@@ -13,21 +13,38 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 	  @Autowired
-	    private JwtAuthenticationFilter jwtAuthenticationFilter;
+	    private JwtAuthenticationFilter jwtAuthenticationFilter;	  
+	  
 
+	    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+	        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	    }
+//	swagger api doc
 	    @Bean
-	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-	        http.csrf(csrf -> csrf.disable())
+	    public SecurityFilterChain swaggerSecurityChain(HttpSecurity http) throws Exception {
+	        http
+	            .securityMatcher("/swagger-ui/**", "/v3/api-docs/**") // only swagger
+	            .csrf(csrf -> csrf.disable())
+	            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+	        return http.build();
+	    }
+
+	    //App endpoints chain
+	    @Bean
+	    public SecurityFilterChain appSecurityChain(HttpSecurity http) throws Exception {
+	        http
+	            .csrf(csrf -> csrf.disable())
 	            .authorizeHttpRequests(auth -> auth
 	                .requestMatchers("/api/auth/**").permitAll()
 	                .anyRequest().authenticated()
 	            )
-	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ✅ add JWT filter
-
+	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 	        return http.build();
 	    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+	    @Bean
+	    public PasswordEncoder passwordEncoder() {
+	        return new BCryptPasswordEncoder();
+	    }
+
 }

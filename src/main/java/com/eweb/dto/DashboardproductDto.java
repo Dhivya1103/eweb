@@ -1,5 +1,7 @@
 package com.eweb.dto;
 
+import java.util.List;
+
 import com.eweb.model.Products;
 
 import lombok.Getter;
@@ -21,8 +23,12 @@ public class DashboardproductDto {
     private Double savings;
     private Double favoritesCount;
     private Double reviewsCount;
-//    private List<FavoriteDto> favorites;
-//    private List<ReviewDto> reviews;
+    private Long cId;
+    private Long sId;
+    private String description;
+    private List<FvoriteDto> favorites;
+    private List<ReviewDto> reviews;
+    private List<VariantDto> variants;
 	public DashboardproductDto(Products model) {
 		super();
 		this.id = model.getId();
@@ -31,7 +37,24 @@ public class DashboardproductDto {
 		this.stock = model.getStock();
 		this.price = model.getPrice();
 		this.discount = model.getDiscount();
+		this.cId=model.getCategory();
+		this.sId= model.getSubCategory();
 	
+	}
+	public DashboardproductDto(ProductList list) {
+	
+		this.id = list.getPId();
+		this.name = list.getPName();
+		this.imageUrl = list.getImage();
+		this.categoryName = list.getCName();
+		this.subCategoryName = list.getSName();
+		this.stock = list.getStock();
+		this.price = list.getPrice();
+		this.discount = list.getDiscount();			
+		this.cId = list.getCId();
+		this.sId = list.getSCid();
+		this.description=list.getDescription();
+		
 	}
     
     

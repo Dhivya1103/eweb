@@ -1,5 +1,10 @@
 package com.eweb.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.eweb.model.ProductVariant;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,4 +22,5 @@ public class ProductDto {
 	    private Double discount; 	   
 	    private Long stock;
 	    private String imageUrl;
+	    List<VariantDto> variants =new ArrayList<>();
 }
