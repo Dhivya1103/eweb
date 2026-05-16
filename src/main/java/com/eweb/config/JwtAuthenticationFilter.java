@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,11 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private AdminRepository adminRepository;
     @Autowired
    private  RoleRepository roleRepository;
+    
+    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+throws ServletException, IOException {
 
+try {
         String jwt = parseJwt(request);
         if (jwt != null && jwtUtil.isTokenValid(jwt)) {
             String email = jwtUtil.extractEmail(jwt);
@@ -51,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 User userDetails = new org.springframework.security.core.userdetails.User(
                         admin.getEmail(), 
                         admin.getPassword(), 
-                        Collections.singletonList(new SimpleGrantedAuthority(byId.get().getName()))
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +byId.get().getName()))
                 );
 
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -64,7 +71,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-
+     }catch (Exception e) {
+	logger.error("JWT error: {}", e.getMessage());
+	
+	  SecurityContextHolder.clearContext();
+        }
         filterChain.doFilter(request, response);
     }
 

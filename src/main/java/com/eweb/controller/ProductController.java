@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eweb.dao.AdminRepository;
 import com.eweb.dto.CategoryDto;
+import com.eweb.dto.FvoriteDto;
 import com.eweb.dto.ProductDto;
+import com.eweb.dto.ReviewDto;
 import com.eweb.dto.SubCategoryDto;
 import com.eweb.model.Admin;
 import com.eweb.service.ProductService;
@@ -114,5 +116,18 @@ public class ProductController {
 	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findlatestProduct(categoryId, name, minPrice, maxPrice,size ,pageable);
+	    }
+	  
+	    @PostMapping("/saveReview")
+	    public ResponseEntity<?> saveReview(@RequestBody ReviewDto review, Authentication authentication) {
+	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+	    	return productService.saveReview(review);	         
+	    }
+	    @PostMapping("/saveFavorites")
+	    public ResponseEntity<?> saveFavorite(@RequestBody FvoriteDto review, Authentication authentication) {
+	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+	    	return productService.saveFavorite(review);         
 	    }
 }

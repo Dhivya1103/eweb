@@ -2,6 +2,8 @@ package com.eweb.model;
 
 import java.time.LocalDateTime;
 
+import com.eweb.dto.FvoriteDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,4 +31,12 @@ public class favorite {
 	    private Long customerId;
 	    @Column
 	    private LocalDateTime createdAt;
+	    
+	    public favorite(FvoriteDto model) {
+	    	
+			this.id = model.getId();
+			this.productId = model.getProductId();
+			this.customerId = model.getCustomerId();
+		
+		}
 }

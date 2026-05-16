@@ -1,6 +1,7 @@
 package com.eweb.dto;
 
 import com.eweb.model.Admin;
+import com.eweb.model.Customer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,16 @@ public class AdminDto {
 		this.status=admin.getStatus();
 		
 	}
-    
+	
+	public AdminDto(Customer admin) {
+		
+		this.fullName = admin.getFullName();
+		this.email = admin.getEmail();
+		this.mobileNumber = admin.getMobileNumber();
+		
+		
+		
+	}
     
 
 }

@@ -263,5 +263,33 @@ public class ProductService {
 		
 	}
 
+	public ResponseEntity<?> saveReview(ReviewDto review) {
+		Optional<Products> product = productsRepository.findById(review.getProductId());
+		if(product.isPresent()) {
+			Review model = new Review(review);
+			model.setCreatedAt(LocalDateTime.now());
+			reviewRepository.save(model);
+	return new ResponseEntity<Status>(new Status("200", "product review  Updated successfully!!!"), HttpStatus.OK);
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(new Status("404", "Product doesn't exist"));
+		}
+		
+	}
+	
+	public ResponseEntity<?> saveFavorite(FvoriteDto review) {
+		Optional<Products> product = productsRepository.findById(review.getProductId());
+		if(product.isPresent()) {
+			favorite model = new favorite(review);
+			model.setCreatedAt(LocalDateTime.now());
+			favoriteRepository.save(model);
+	return new ResponseEntity<Status>(new Status("200", "product favorite  Updated successfully!!!"), HttpStatus.OK);
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(new Status("404", "Product doesn't exist"));
+		}
+		
+	}
+
 
 }

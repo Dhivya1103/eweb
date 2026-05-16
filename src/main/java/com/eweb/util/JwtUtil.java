@@ -51,4 +51,21 @@ public class JwtUtil {
             return false;
         }
     }
+
+	public String generateToken(String mobile) {
+		 return Jwts.builder()
+	                .setSubject(mobile)
+	                .setIssuedAt(new Date())
+	                .setExpiration(
+	                        new Date(
+	                                System.currentTimeMillis()
+	                                        + jwtExpirationMs
+	                        )
+	                )
+	                .signWith(
+	                        SignatureAlgorithm.HS256,
+	                        jwtSecretKey
+	                )
+	                .compact();
+	    }
 }

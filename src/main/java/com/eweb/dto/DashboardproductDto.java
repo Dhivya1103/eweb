@@ -39,7 +39,7 @@ public class DashboardproductDto {
 		this.discount = model.getDiscount();
 		this.cId=model.getCategory();
 		this.sId= model.getSubCategory();
-	
+		this.description=model.getDescription();
 	}
 	public DashboardproductDto(ProductList list) {
 	

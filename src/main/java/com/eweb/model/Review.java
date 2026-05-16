@@ -2,6 +2,8 @@ package com.eweb.model;
 
 import java.time.LocalDateTime;
 
+import com.eweb.dto.ReviewDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,4 +33,13 @@ public class Review {
 	    private String comment;
 	    @Column 
 	    private LocalDateTime createdAt;
+		public Review(ReviewDto dto) {			
+			this.id = dto.getId();
+			this.productId = dto.getProductId();
+			this.rating = dto.getRating();
+			this.comment = dto.getComment();
+		
+		}
+	    
+	    
 }
