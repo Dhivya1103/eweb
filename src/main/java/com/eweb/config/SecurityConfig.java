@@ -3,6 +3,7 @@ package com.eweb.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 	    }
 //	swagger api doc
 	    @Bean
+	    @Order(1)
 	    public SecurityFilterChain swaggerSecurityChain(HttpSecurity http) throws Exception {
 	        http
 	            .securityMatcher("/swagger-ui/**", "/v3/api-docs/**") // only swagger
@@ -33,6 +35,7 @@ public class SecurityConfig {
 
 	    //App endpoints chain
 	    @Bean
+	    @Order(2)
 	    public SecurityFilterChain appSecurityChain(HttpSecurity http) throws Exception {
 	        http
 	            .csrf(csrf -> csrf.disable()).exceptionHandling(ex ->
