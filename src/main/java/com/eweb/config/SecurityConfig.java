@@ -23,38 +23,65 @@ public class SecurityConfig {
 	        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 	    }
 //	swagger api doc
-	    @Bean
-	    @Order(1)
-	    public SecurityFilterChain swaggerSecurityChain(HttpSecurity http) throws Exception {
-	    	  http
-	          .csrf(csrf -> csrf.disable())
-	          .authorizeHttpRequests(auth -> auth
-	              .requestMatchers(
-	                  "/swagger-ui/**",
-	                  "/v3/api-docs/**",
-	                  "/swagger-ui.html"
-	              ).permitAll()
-	              .anyRequest().authenticated()
-	          );
+//	    @Bean	 
+//	    public SecurityFilterChain swaggerSecurityChain(HttpSecurity http) throws Exception {
+//	    	  http
+//	          .csrf(csrf -> csrf.disable())
+//	          .authorizeHttpRequests(auth -> auth
+//	              .requestMatchers(
+//	                  "/swagger-ui/**",
+//	                  "/v3/api-docs/**",
+//	                  "/swagger-ui.html"
+//	              ).permitAll()
+//	              .anyRequest().authenticated()
+//	          );
+//
+//	      return http.build();
+//	    }
+//
+//	    //App endpoints chain
+//	    @Bean	    
+//	    public SecurityFilterChain appSecurityChain(HttpSecurity http) throws Exception {
+//	        http
+//	            .csrf(csrf -> csrf.disable()).exceptionHandling(ex ->
+//                ex.authenticationEntryPoint(authEntryPointJwt)
+//        )
+//	            .authorizeHttpRequests(auth -> auth
+//	                .requestMatchers("/api/auth/**").permitAll()
+//	                .anyRequest().authenticated()
+//	            )
+//	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//	        return http.build();
+//	    }
 
-	      return http.build();
-	    }
-
-	    //App endpoints chain
+	    
 	    @Bean
-	    @Order(2)
 	    public SecurityFilterChain appSecurityChain(HttpSecurity http) throws Exception {
+
 	        http
-	            .csrf(csrf -> csrf.disable()).exceptionHandling(ex ->
-                ex.authenticationEntryPoint(authEntryPointJwt)
-        )
+	            .csrf(csrf -> csrf.disable())
+	            .exceptionHandling(ex ->
+	                ex.authenticationEntryPoint(authEntryPointJwt)
+	            )
 	            .authorizeHttpRequests(auth -> auth
+	                // Swagger allow
+	                .requestMatchers(
+	                    "/swagger-ui/**",
+	                    "/v3/api-docs/**",
+	                    "/swagger-ui.html"
+	                ).permitAll()
+	                // Auth APIs allow
 	                .requestMatchers("/api/auth/**").permitAll()
+	                // Others secured
 	                .anyRequest().authenticated()
 	            )
-	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	            .addFilterBefore(
+	                jwtAuthenticationFilter,
+	                UsernamePasswordAuthenticationFilter.class
+	            );
 	        return http.build();
 	    }
+
 
 	    @Bean
 	    public PasswordEncoder passwordEncoder() {
