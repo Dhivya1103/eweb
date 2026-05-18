@@ -26,11 +26,18 @@ public class SecurityConfig {
 	    @Bean
 	    @Order(1)
 	    public SecurityFilterChain swaggerSecurityChain(HttpSecurity http) throws Exception {
-	        http
-	            .securityMatcher("/swagger-ui/**", "/v3/api-docs/**") // only swagger
-	            .csrf(csrf -> csrf.disable())
-	            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-	        return http.build();
+	    	  http
+	          .csrf(csrf -> csrf.disable())
+	          .authorizeHttpRequests(auth -> auth
+	              .requestMatchers(
+	                  "/swagger-ui/**",
+	                  "/v3/api-docs/**",
+	                  "/swagger-ui.html"
+	              ).permitAll()
+	              .anyRequest().authenticated()
+	          );
+
+	      return http.build();
 	    }
 
 	    //App endpoints chain
