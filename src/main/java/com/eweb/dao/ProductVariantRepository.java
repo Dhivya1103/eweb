@@ -14,5 +14,7 @@ import com.eweb.model.Review;
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long>{
 	@Query(value = "SELECT * FROM product_variant WHERE product_id = :productId ", nativeQuery = true)
 	List<ProductVariant> findByProduct(@Param ("productId")Long productId);
+	
+	
 
 }

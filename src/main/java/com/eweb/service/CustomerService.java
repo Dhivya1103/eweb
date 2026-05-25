@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.eweb.dao.CustomerRepository;
 import com.eweb.dto.AdminDto;
+import com.eweb.dto.DashboardproductDto;
 import com.eweb.dto.LoginRequest;
 import com.eweb.model.Admin;
 import com.eweb.model.Customer;
@@ -138,6 +139,16 @@ public class CustomerService {
 			    a.setExpiryTime(null);
 			    customerRepository.save(a);
 			    return ResponseEntity.ok(new Status("200", "Password reset successfully!"));
+		}
+		public ResponseEntity<?> getUserProfile(Long id) {
+			Optional<Customer> byEmail = customerRepository.findById(id);
+			if(byEmail.isPresent()) {
+				AdminDto dto = new AdminDto(byEmail.get());
+				return new ResponseEntity<AdminDto>(dto, HttpStatus.OK);
+			}else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new Status("404", "NoRecord Found"));
+}
 		}
 		
 }

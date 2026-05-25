@@ -290,6 +290,45 @@ public class ProductService {
 		}
 		
 	}
+	
+	public ResponseEntity<?> getUserFavorites(Long userId, Pageable pageable) {
+
+	    Page<ProductList> favoriteProducts =
+	            productsRepository.findFavoriteProductsByUser(userId, pageable);
+
+	    List<DashboardproductDto> dtoList = favoriteProducts.stream()
+	            .map(product -> {
+	                DashboardproductDto dto = new DashboardproductDto(product);
+	                Double favoriteCount = favoriteRepository.favoriteCount(product.getPId());
+	                dto.setFavoritesCount(
+	                        favoriteCount != null ? favoriteCount : 0);
+	                Double reviewCount =
+	                        reviewRepository.reviewCount(product.getPId());
+	                dto.setReviewsCount(
+	                        reviewCount != null ? reviewCount : 0);
+	  			  
+			        List<favorite> favorites = favoriteRepository.findByProduct(product.getPId());
+			        List<FvoriteDto> fList = favorites != null
+			                ? favorites.stream().map(FvoriteDto::new).collect(Collectors.toList())
+			                : new ArrayList<>();
+			        dto.setFavorites(fList);
+
+			        List<Review> reviews = reviewRepository.findByProduct(product.getPId());
+			        List<ReviewDto> rList = reviews != null
+			                ? reviews.stream().map(ReviewDto::new).collect(Collectors.toList())
+			                : new ArrayList<>();
+			        dto.setReviews(rList);
+			        List<ProductVariant> byProduct = productVariantRepository.findByProduct(product.getPId());
+			        if(byProduct!=null &&!byProduct.isEmpty()) {
+			        	List<VariantDto> collect = byProduct.stream().map(VariantDto::new ).collect(Collectors.toList());
+			        	dto.setVariants(collect);
+			        }
+			        return dto;
+			    }).collect(Collectors.toList());	
+		 PageDataDto<DashboardproductDto> pageData = new PageDataDto<>(dtoList, favoriteProducts);
+	        return new ResponseEntity<>(pageData, HttpStatus.OK);
+
+	}
 
 
 }

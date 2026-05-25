@@ -24,4 +24,7 @@ public interface ProductsRepository extends JpaRepository<Products, Long>{
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice, Pageable pageable);
 
+@Query(value= "select p.id as pId , p.name as pName , p.description as description , p.category as cId , p.sub_category as sCid , p.price as price , p.discount as discount , p.stock as stock ,p.image_url as image , c.name as cName , s.name as sName from products p left Join category c on c.id = p.category left join subcategory s on s.id =p.sub_category left join favorite f on f.product_id = p.id WHERE customer_id = :userId ", nativeQuery = true)
+Page<ProductList> findFavoriteProductsByUser(Long userId, Pageable pageable);
+
 }

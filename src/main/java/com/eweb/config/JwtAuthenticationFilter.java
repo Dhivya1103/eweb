@@ -17,8 +17,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.eweb.dao.AdminRepository;
+import com.eweb.dao.CustomerRepository;
 import com.eweb.dao.RoleRepository;
 import com.eweb.model.Admin;
+import com.eweb.model.Customer;
 import com.eweb.model.Role;
 import com.eweb.util.JwtUtil;
 
@@ -37,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private AdminRepository adminRepository;
     @Autowired
    private  RoleRepository roleRepository;
+	@Autowired	
+	CustomerRepository customerRepository;
     
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
@@ -50,16 +54,26 @@ try {
         String jwt = parseJwt(request);
         if (jwt != null && jwtUtil.isTokenValid(jwt)) {
             String email = jwtUtil.extractEmail(jwt);
-
+            Optional<Customer> customerOpt = customerRepository.findByEmail(email);
             Optional<Admin> adminOpt = adminRepository.findByEmail(email);
+            User userDetails =null;
             if (adminOpt.isPresent()) {
                 Admin admin = adminOpt.get();
                 Optional<Role> byId = roleRepository.findById(admin.getRoleId());
-                User userDetails = new org.springframework.security.core.userdetails.User(
+              userDetails = new org.springframework.security.core.userdetails.User(
                         admin.getEmail(), 
                         admin.getPassword(), 
                         Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +byId.get().getName()))
-                );
+                );}else if (customerOpt.isPresent()) {
+
+                    Customer customer = customerOpt.get();
+
+                    userDetails = new User(
+                        customer.getEmail(),
+                        customer.getPassword(),
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                    );
+                }
 
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
@@ -70,7 +84,7 @@ try {
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-        }
+        
      }catch (Exception e) {
 	logger.error("JWT error: {}", e.getMessage());
 	

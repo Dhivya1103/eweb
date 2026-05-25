@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eweb.dao.AdminRepository;
+import com.eweb.dao.CustomerRepository;
 import com.eweb.dto.CategoryDto;
 import com.eweb.dto.FvoriteDto;
 import com.eweb.dto.ProductDto;
 import com.eweb.dto.ReviewDto;
 import com.eweb.dto.SubCategoryDto;
 import com.eweb.model.Admin;
+import com.eweb.model.Customer;
 import com.eweb.service.ProductService;
 
 
@@ -39,6 +41,8 @@ public class ProductController {
 	private ProductService productService;
 	@Autowired
 	private AdminRepository adminRepository;
+	@Autowired	
+	CustomerRepository customerRepository;
 	
 	  @GetMapping("/latest-products")
 	    public ResponseEntity<?> getLatestProducts() {
@@ -120,14 +124,37 @@ public class ProductController {
 	  
 	    @PostMapping("/saveReview")
 	    public ResponseEntity<?> saveReview(@RequestBody ReviewDto review, Authentication authentication) {
-	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	    	return productService.saveReview(review);	         
 	    }
 	    @PostMapping("/saveFavorites")
 	    public ResponseEntity<?> saveFavorite(@RequestBody FvoriteDto review, Authentication authentication) {
-	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	    	return productService.saveFavorite(review);         
+	    }
+	    @GetMapping("/findUserFavorite")
+	    public  ResponseEntity<?>  findUserFavorite( @RequestParam(required = false) Long id,
+	             Authentication authentication,Pageable pageable) {	    
+	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
+	        return productService.getUserFavorites(id,pageable);
+	    }
+	    @GetMapping("/findProductById")
+	    public  ResponseEntity<?>  findProductForCu(@RequestParam("productId") Long productId , Authentication authentication) {	    
+	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
+	        return productService.findProduct(productId);
+	    }
+	  @GetMapping("/findlatestProductForCu")
+	    public  ResponseEntity<?>  findlatestProductForCu( @RequestParam(required = false) Long categoryId,
+	            @RequestParam(required = false) String name,
+	            @RequestParam(required = false) Double minPrice,
+	            @RequestParam(required = false) Double maxPrice,
+	            @RequestParam(required = false) String size, Authentication authentication,Pageable pageable) {	    
+		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
+	        return productService.findlatestProduct(categoryId, name, minPrice, maxPrice,size ,pageable);
 	    }
 }
