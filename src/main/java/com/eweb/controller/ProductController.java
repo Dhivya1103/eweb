@@ -64,21 +64,21 @@ public class ProductController {
 	    }
 	  
 	  @GetMapping("/getSubCategory")
-		public ResponseEntity<?> getSubCategory(@RequestParam("categoryId") Long categoryId,
+		public ResponseEntity<?> getSubCategory(@RequestParam(value = "categoryId") Long categoryId,
 				Authentication authentication) {
 			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());			
 				return productService.getSubCategory(categoryId);			
 		}
 	  @DeleteMapping("/deleteCategory")
-		public ResponseEntity<?> deleteCategory(@RequestParam("categoryId") Long categoryId, Authentication authentication) {
+		public ResponseEntity<?> deleteCategory(@RequestParam(value ="categoryId") Long categoryId, Authentication authentication) {
 			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());		
 				return productService.deleteCategory(categoryId);			
 		}
 	  
 	  @DeleteMapping("/deleteSubCategory")
-		public ResponseEntity<?> deleteSubCategory(@RequestParam("subCategoryId") Long subCategoryId,
+		public ResponseEntity<?> deleteSubCategory(@RequestParam(value = "subCategoryId") Long subCategoryId,
 				Authentication authentication) {
 			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());			
@@ -106,7 +106,7 @@ public class ProductController {
 	  }
 	  
 	  @GetMapping("/findProduct")
-	    public  ResponseEntity<?>  findProduct(@RequestParam("productId") Long productId , Authentication authentication) {	    
+	    public  ResponseEntity<?>  findProduct(@RequestParam( value = "productId") Long productId , Authentication authentication) {	    
 	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findProduct(productId);
@@ -135,24 +135,24 @@ public class ProductController {
 	    	return productService.saveFavorite(review);         
 	    }
 	    @GetMapping("/findUserFavorite")
-	    public  ResponseEntity<?>  findUserFavorite( @RequestParam(required = false) Long id,
+	    public  ResponseEntity<?>  findUserFavorite( @RequestParam(value = "id" ,required = false) Long id,
 	             Authentication authentication,Pageable pageable) {	    
 	    	 UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.getUserFavorites(id,pageable);
 	    }
 	    @GetMapping("/findProductById")
-	    public  ResponseEntity<?>  findProductForCu(@RequestParam("productId") Long productId , Authentication authentication) {	    
+	    public  ResponseEntity<?>  findProductForCu(@RequestParam(value = "productId") Long productId , Authentication authentication) {	    
 	    	UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findProduct(productId);
 	    }
 	  @GetMapping("/findlatestProductForCu")
-	    public  ResponseEntity<?>  findlatestProductForCu( @RequestParam(required = false) Long categoryId,
-	            @RequestParam(required = false) String name,
-	            @RequestParam(required = false) Double minPrice,
-	            @RequestParam(required = false) Double maxPrice,
-	            @RequestParam(required = false) String size, Authentication authentication,Pageable pageable) {	    
+	    public  ResponseEntity<?>  findlatestProductForCu( @RequestParam(value ="categoryId" , required = false) Long categoryId,
+	            @RequestParam(value ="name" ,required = false) String name,
+	            @RequestParam(value ="minPrice" ,required = false) Double minPrice,
+	            @RequestParam(value ="maxPrice" ,required = false) Double maxPrice,
+	            @RequestParam(value ="size" ,required = false) String size, Authentication authentication,Pageable pageable) {	    
 		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findlatestProduct(categoryId, name, minPrice, maxPrice,size ,pageable);

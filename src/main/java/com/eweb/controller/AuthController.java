@@ -62,11 +62,11 @@ public class AuthController {
 	    }
 	    
 	    @PostMapping("/forgot-password")
-	    public ResponseEntity<?> forgetPassword(@RequestParam String email) {
+	    public ResponseEntity<?> forgetPassword(@RequestParam(value = "email") String email) {
 	        return adminService.forgetPassword(email);
 	    }
 	    @PostMapping("/verifyotp")
-	    public ResponseEntity<?> verifyOtp(@RequestParam String email,@RequestParam String otp ) {
+	    public ResponseEntity<?> verifyOtp(@RequestParam (value = "email") String email,@RequestParam (value = "otp") String otp ) {
 	        return adminService.verifyOtp(email,otp);
 	    }
 	    @PostMapping("/reset-password")
@@ -100,11 +100,11 @@ public class AuthController {
 	        }
 	    }
 	    @PostMapping("/customerForgot-password")
-	    public ResponseEntity<?> customerForgotPassword(@RequestParam String email) {
+	    public ResponseEntity<?> customerForgotPassword(@RequestParam (value = "email")String email) {
 	        return customerService.customerForgotPassword(email);
 	    }
 	    @PostMapping("/customerVerifyotp")
-	    public ResponseEntity<?> customerVerifyotp(@RequestParam String email,@RequestParam String otp ) {
+	    public ResponseEntity<?> customerVerifyotp(@RequestParam (value = "email") String email,@RequestParam (value = "otp") String otp ) {
 	        return customerService.customerVerifyotp(email,otp);
 	    }
 	    @PostMapping("/customerReset-password")
@@ -113,7 +113,7 @@ public class AuthController {
 	    }
 	    
 	    @PostMapping("/sendMobileOtp")
-	    public Map<String, String> sendOtp(@RequestParam String mobile) {
+	    public Map<String, String> sendOtp(@RequestParam (value = "mobile") String mobile) {
 
 	        otpService.generateOtp(mobile);
 
@@ -124,7 +124,7 @@ public class AuthController {
 	    }
 	    
 	    @PostMapping("/verifyMobileOtp")
-	    public ResponseEntity<Map<String, Object>> verifyMobileOtp( @RequestParam String mobile, @RequestParam String otp) {
+	    public ResponseEntity<Map<String, Object>> verifyMobileOtp( @RequestParam (value = "mobile") String mobile, @RequestParam (value = "otp") String otp) {
 try {
 	        boolean valid = otpService.verifyOtp(mobile, otp);
 	        Optional<Customer> customer = customerRepository.findByMobileNumber(mobile);

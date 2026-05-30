@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AdminDto {
+	private Long Id;
 	private String fullName;
     private String email;
     private String mobileNumber;
@@ -20,7 +21,7 @@ public class AdminDto {
     private String roleName;
     private String status;
 	public AdminDto(Admin admin) {
-	
+		this.Id=admin.getId();
 		this.fullName = admin.getFullName();
 		this.email = admin.getEmail();
 		this.mobileNumber = admin.getMobileNumber();
@@ -30,7 +31,7 @@ public class AdminDto {
 	}
 	
 	public AdminDto(Customer admin) {
-		
+		this.Id=admin.getId();
 		this.fullName = admin.getFullName();
 		this.email = admin.getEmail();
 		this.mobileNumber = admin.getMobileNumber();

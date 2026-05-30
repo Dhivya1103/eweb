@@ -28,7 +28,7 @@ public class ProductVariant {
 	 	@Column
 	    private String size;
 	 	@Column
-	    private Integer stock;
+	    private Long stock;
 	 	@Column
 	    private Double price;
 	 	@Column

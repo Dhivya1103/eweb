@@ -27,7 +27,7 @@ public class CustomerController {
 	CustomerRepository customerRepository;
 	
 	  @GetMapping("/profile")
-	    public ResponseEntity<?> getUserProfile(@RequestParam ("id") Long id , Authentication authentication) {
+	    public ResponseEntity<?> getUserProfile(@RequestParam (value = "id") Long id , Authentication authentication) {
 		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 			Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());		
 				return customerService.getUserProfile(id);			

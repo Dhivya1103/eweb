@@ -39,13 +39,13 @@ public class CartController {
 	  }
 	
 	@GetMapping("/findCartList")
-	  public ResponseEntity<?> saveCategory(@RequestParam ("userId") Long userId ,Authentication authentication,Pageable pageable) {
+	  public ResponseEntity<?> saveCategory(@RequestParam (value ="userId") Long userId ,Authentication authentication,Pageable pageable) {
 		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 		  return cartService.getCart(userId , pageable);
 	  }
 	@GetMapping("/findAllSize")
-	  public ResponseEntity<?> findAllSize(@RequestParam ("productId") Long productId ,Authentication authentication) {
+	  public ResponseEntity<?> findAllSize(@RequestParam (value = "productId") Long productId ,Authentication authentication) {
 		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 		  return cartService.findAllSize(productId );
@@ -64,7 +64,7 @@ public class CartController {
 	  }
 	
 	@GetMapping("/getCartSummary")
-	  public ResponseEntity<?> getCartSummary(@RequestParam ("userId") Long userId ,Authentication authentication) {
+	  public ResponseEntity<?> getCartSummary(@RequestParam (value = "userId") Long userId ,Authentication authentication) {
 		  UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 		  return cartService.getCartSummary(userId );
