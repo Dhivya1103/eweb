@@ -2,6 +2,8 @@ package com.eweb.model;
 
 import java.time.LocalDateTime;
 
+import com.eweb.dto.PurchaseReturnDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,30 +18,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "customer")
-public class Customer {
-	@Id
+@Table(name = "purchase_return")
+public class PurchaseReturn {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column
-    private String fullName;
-
+    private Long purchaseOrderId;
     @Column
-    private String email;
-
+    private Long variantId;
     @Column
-    private String mobileNumber;
-
+    private Long returnQty;
     @Column
-    private String password;
-   
+    private String reason;
     @Column
-    private String otp;
+    private LocalDateTime createdAt;
+	public PurchaseReturn(PurchaseReturnDto dto) {		
+		this.purchaseOrderId = dto.getPurchaseOrderId();
+		this.variantId = dto.getVariantId();
+		this.returnQty = dto.getReturnQty();
+		this.reason = dto.getReason();
+		
+	}
     
-    @Column
-    private LocalDateTime expiryTime;
     
-    @Column
-    private String status;
 }

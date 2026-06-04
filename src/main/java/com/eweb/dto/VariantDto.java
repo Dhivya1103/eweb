@@ -18,6 +18,7 @@ public class VariantDto {
 	    private Long productId;
 	    private Long quantity;
 	    private Double total;
+	    private String pName;
 	    public VariantDto(ProductVariant dto) {
 			this.id=dto.getId();
 			this.color = dto.getColor();

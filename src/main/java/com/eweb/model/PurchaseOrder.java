@@ -16,30 +16,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "customer")
-public class Customer {
+@Table(name = "purchase_order")
+public class PurchaseOrder {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String fullName;
+    private String poNumber;
 
     @Column
-    private String email;
+    private Long vendorId;
 
     @Column
-    private String mobileNumber;
+    private Double totalAmount;
 
-    @Column
-    private String password;
-   
-    @Column
-    private String otp;
-    
-    @Column
-    private LocalDateTime expiryTime;
-    
     @Column
     private String status;
+
+    @Column
+    private LocalDateTime createdAt;
+
 }

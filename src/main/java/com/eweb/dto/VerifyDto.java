@@ -15,4 +15,5 @@ public class VerifyDto {
 
 	    private String razorpaySignature;
 	    private String paymentMethod;
+	    private String couponCode;
 }

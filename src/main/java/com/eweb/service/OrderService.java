@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.eweb.dao.CartRepository;
+import com.eweb.dao.CouponRepository;
 import com.eweb.dao.OrderItemRepository;
 import com.eweb.dao.OrderRepository;
 import com.eweb.dao.ProductVariantRepository;
@@ -24,6 +25,7 @@ import com.eweb.dao.ProductsRepository;
 import com.eweb.dto.OrderDto;
 import com.eweb.dto.OrderResponseDto;
 import com.eweb.model.Cart;
+import com.eweb.model.Coupon;
 import com.eweb.model.Order;
 import com.eweb.model.OrderItem;
 import com.eweb.model.ProductVariant;
@@ -56,9 +58,11 @@ public class OrderService {
 	@Autowired
 	private ProductsRepository productsRepoitory;
 	
+	@Autowired
+	CouponRepository couponRepository;
 
 	@Transactional
-	public ResponseEntity<?> createOrderAfterPayment(Long userId, String paymentId, String paymentMethod)
+	public ResponseEntity<?> createOrderAfterPayment(Long userId, String paymentId, String paymentMethod, String couponCode)
 	{
 	    // GET CART ITEMS
 	    List<Cart> cartItems =cartRepository.findByUserId(userId);
@@ -124,6 +128,19 @@ public class OrderService {
 	    ordersRepository.save(savedOrder);
 	    // CLEAR CART
 	    cartRepository.deleteByUserId(userId);
+	    
+	    
+	    if(couponCode!= null) {
+
+       	 Optional<Coupon> byCouponCode = couponRepository.findByCouponCode(couponCode);
+    	    if(byCouponCode.isEmpty()) {
+    	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    	                    .body(new Status("404", "coupon not  present"));
+    	    }
+    	   Coupon coupon = byCouponCode.get();
+           coupon.setUsedCount(coupon.getUsedCount() + 1);
+           couponRepository.save(coupon);
+       }
 	    return ResponseEntity.ok(
 	            new Status(
 	                    "200",
@@ -187,6 +204,18 @@ public class OrderService {
 	        ordersRepository.save(savedOrder);
 	        // CLEAR CART
 	        cartRepository.deleteByUserId(request.getUserId());
+	        
+	        if(request.getCouponCode()!= null) {
+
+	        	 Optional<Coupon> byCouponCode = couponRepository.findByCouponCode(request.getCouponCode());
+	     	    if(byCouponCode.isEmpty()) {
+	     	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	     	                    .body(new Status("404", "coupon not  present"));
+	     	    }
+	     	   Coupon coupon = byCouponCode.get();
+	            coupon.setUsedCount(coupon.getUsedCount() + 1);
+	            couponRepository.save(coupon);
+	        }
 	        return ResponseEntity.ok(
 	                new Status("200", "COD Order Placed")
 	        );

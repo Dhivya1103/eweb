@@ -80,7 +80,8 @@ public class PaymentService {
 	        ResponseEntity<?> order = orderService.createOrderAfterPayment(
 	                        userId,
 	                        request.getRazorpayPaymentId(),
-	                        request.getPaymentMethod()
+	                        request.getPaymentMethod(),
+	                        request.getCouponCode()
 	                );
 
 	         return ResponseEntity.ok(new Status("200", "Payment verification successfull!")); 

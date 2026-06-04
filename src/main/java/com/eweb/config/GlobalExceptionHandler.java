@@ -24,4 +24,19 @@ public class GlobalExceptionHandler {
 
 	        return ResponseEntity.status(405).body(res);
 	    }
+	  
+	  @ExceptionHandler(Exception.class)
+	    public ResponseEntity<Map<String, Object>> handle500(
+	            Exception ex,
+	            HttpServletRequest request) {
+
+	        Map<String, Object> res = new HashMap<>();
+
+	        res.put("status", 500);
+	        res.put("error", "Internal Server Error");
+	        res.put("message", ex.getMessage());
+	        res.put("path", request.getRequestURI());
+
+	        return ResponseEntity.status(500).body(res);
+	    }
 }

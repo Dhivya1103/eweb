@@ -1,5 +1,6 @@
 package com.eweb.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,18 +14,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.eweb.dao.CartRepository;
+import com.eweb.dao.CouponRepository;
 import com.eweb.dao.ProductVariantRepository;
 import com.eweb.dao.ProductsRepository;
+import com.eweb.dto.ApplyCoupon;
 import com.eweb.dto.CartDto;
 import com.eweb.dto.CartList;
 import com.eweb.dto.CartSummaryDto;
+import com.eweb.dto.CouponApplyResponse;
 import com.eweb.dto.DashboardproductDto;
 import com.eweb.dto.PageDataDto;
 import com.eweb.dto.VariantDto;
 import com.eweb.model.Cart;
+import com.eweb.model.Coupon;
 import com.eweb.model.ProductVariant;
 import com.eweb.model.Products;
 import com.eweb.model.Status;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CartService {
@@ -34,6 +41,9 @@ public class CartService {
 	ProductVariantRepository productVariantRepository;
 	@Autowired
 	ProductsRepository productsRepository;
+	@Autowired
+	CouponRepository couponRepository;
+	
 	
 	public ResponseEntity<?> addToCart(Cart dto) {
 		 Cart existing =cartRepository.findByUserIdAndProductId(dto.getUserId(), dto.getVariantId());
@@ -109,7 +119,8 @@ public class CartService {
 			        cartRepository.delete(existing);
 			        return ResponseEntity.ok(new Status("200","Cart item removed successfully!"));
 			    }
-			    return ResponseEntity.ok(new Status("400","Cart item not found!") );
+			    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body(new Status("404", "cart item  not  present"));
 	}
 	
 	public ResponseEntity<?> getCartSummary(Long userId){
@@ -140,5 +151,59 @@ public class CartService {
 	    dto.setDiscount(discount);
 	    dto.setFinalAmount(finalAmount);
 	    return ResponseEntity.ok(dto);
+	}
+	
+	
+	@Transactional
+	public ResponseEntity<?> applyCoupon(ApplyCoupon dto){
+	    Optional<Coupon> byCouponCode = couponRepository.findByCouponCode(dto.getCouponCode());
+	    if(byCouponCode.isEmpty()) {
+	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body(new Status("404", "coupon not  present"));
+	    }
+	           Coupon coupon = byCouponCode.get();
+	    // Active Check
+	    if(!"ACTIVE".equalsIgnoreCase(coupon.getStatus())){
+	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body(new Status("404", "Coupon Inactive"));
+	    }
+	    LocalDate today = LocalDate.now();
+	    // Date Validation
+	    if(today.isBefore(coupon.getValidFrom())
+	            || today.isAfter(coupon.getValidTo())){
+
+	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body(new Status("404", "Coupon Expired"));
+	    }
+	    // Minimum Order Amount Check
+	    if(dto.getOrderAmount() < coupon.getMinOrderAmount()){
+	        return ResponseEntity.badRequest()
+	                .body("Minimum Order Amount Should Be "
+	                        + coupon.getMinOrderAmount());
+	    }
+	    // Usage Limit Check
+	    if(coupon.getUsedCount() >= coupon.getUsageLimit()){
+	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body(new Status("404", "Coupon Usage Limit Exceed"));
+	    }
+	    double discount = 0;
+	    // Percentage Coupon
+	    if("PERCENTAGE".equalsIgnoreCase(coupon.getDiscountType())){
+	        discount = dto.getOrderAmount() * coupon.getDiscountValue()/ 100;
+	        if(coupon.getMaxDiscount() != null && discount > coupon.getMaxDiscount()){
+	            discount = coupon.getMaxDiscount();
+	        }
+	    }
+	    // Fixed Coupon
+	    else if("FIXED".equalsIgnoreCase(coupon.getDiscountType())){
+	        discount = coupon.getDiscountValue();
+	    }
+	    double finalAmount =dto.getOrderAmount() - discount;
+	    CouponApplyResponse response =new CouponApplyResponse();
+	    response.setCouponCode(coupon.getCouponCode());
+	    response.setOrderAmount(dto.getOrderAmount());
+	    response.setDiscount(discount);
+	    response.setFinalAmount(finalAmount);
+	    return ResponseEntity.ok(response);
 	}
 }

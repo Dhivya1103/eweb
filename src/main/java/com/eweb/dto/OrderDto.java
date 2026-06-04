@@ -16,4 +16,5 @@ public class OrderDto {
 	    private String paymentMethod;
 
 	    private String paymentStatus;
+	    private String couponCode;
 }

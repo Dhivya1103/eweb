@@ -157,4 +157,6 @@ public class ProductController {
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 	        return productService.findlatestProduct(categoryId, name, minPrice, maxPrice,size ,pageable);
 	    }
+	  
+	  
 }

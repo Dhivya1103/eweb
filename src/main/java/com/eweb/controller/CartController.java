@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eweb.dao.CustomerRepository;
+import com.eweb.dto.ApplyCoupon;
 import com.eweb.model.Cart;
 import com.eweb.model.Customer;
 import com.eweb.service.CartService;
@@ -69,4 +70,13 @@ public class CartController {
 	         Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
 		  return cartService.getCartSummary(userId );
 	  }
+//	Cart apply
+	@PostMapping("/coupons/apply")
+	public ResponseEntity<?> applyCoupon(@RequestBody ApplyCoupon dto,Authentication authentication){
+		UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        Optional<Customer> user = customerRepository.findByUsername(userPrincipal.getUsername());
+	    return cartService.applyCoupon(dto);
+	}
+	
+	
 }

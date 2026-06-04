@@ -1,8 +1,10 @@
 package com.eweb.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,7 @@ import com.eweb.dao.CustomerRepository;
 import com.eweb.dto.OrderDto;
 import com.eweb.model.Admin;
 import com.eweb.model.Customer;
+import com.eweb.model.ProductVariant;
 import com.eweb.service.AOrderSerivice;
 import com.eweb.service.OrderService;
 import com.eweb.service.shiprocketService;
@@ -62,4 +65,56 @@ public class AOrderController {
 //		Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
 //			return hiprocketService.getToken();
 //    }
+	
+	
+	@GetMapping("/low-stock")
+	public ResponseEntity<?> getLowStockProducts(Authentication authentication) {
+		UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+		Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+		return  aOrderService.getLowStockProducts(10L);
+	   
+	}
+	 @GetMapping("/sales-chart/7-days")
+	    public ResponseEntity<?> getLast7DaysSales() {
+
+		 return ResponseEntity.ok( aOrderService.getLast7DaysSales());
+	    }
+
+	    @GetMapping("/sales-chart/30-days")
+	    public ResponseEntity<?> getLast30DaysSales() {
+
+	         return ResponseEntity.ok( aOrderService.getLast30DaysSales());
+	       
+	    }
+//	    all customers for admin
+	    @GetMapping("/customers")
+		public ResponseEntity<?> customers( @RequestParam(value = "name" , required =false) String name , @RequestParam(value = "mobile" , required =false) String mobile , @RequestParam(value = "email" , required =false) String email , Pageable pageable ,Authentication authentication) {
+			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+			return  aOrderService.getAllcustomers( name ,  mobile ,  email ,pageable);
+		   
+		}
+	    
+	    @GetMapping("/getCustomerDetails")
+		public ResponseEntity<?> getCustomerDetails( @RequestParam(value = "cId" , required =true) Long cId ,Authentication authentication) {
+			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+			return  aOrderService.getCustomerDetails( cId);
+		   
+		}
+	    
+	    @PutMapping("/blockCustomer")
+		public ResponseEntity<?> blockCustomer( @RequestParam(value = "cId" , required =true) Long cId ,Authentication authentication) {
+			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+			return  aOrderService.blockCustomer( cId);		   
+		}
+	    
+	    @PutMapping("/unBlockCustomer")
+		public ResponseEntity<?> unBlockCustomer( @RequestParam(value = "cId" , required =true) Long cId ,Authentication authentication) {
+			UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+			Optional<Admin> user = adminRepository.findByUsername(userPrincipal.getUsername());
+			return  aOrderService.unBlockCustomer( cId);
+		   
+		}
 }

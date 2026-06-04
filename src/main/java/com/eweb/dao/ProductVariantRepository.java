@@ -15,6 +15,9 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 	@Query(value = "SELECT * FROM product_variant WHERE product_id = :productId ", nativeQuery = true)
 	List<ProductVariant> findByProduct(@Param ("productId")Long productId);
 	
+	@Query(value = "SELECT * FROM product_variant WHERE stock <= :productId ", nativeQuery = true)
+	List<ProductVariant> findByLessValue(@Param ("productId")Long productId);
+	
 	
 
 }

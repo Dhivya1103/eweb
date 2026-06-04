@@ -2,7 +2,6 @@ package com.eweb.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,30 +15,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "customer")
-public class Customer {
+@Table(name = "delivery_agent")
+public class Agent {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String fullName;
+    private String agentName;
 
-    @Column
+    private String mobile;
+
     private String email;
 
-    @Column
-    private String mobileNumber;
+    private String address;
 
-    @Column
-    private String password;
-   
-    @Column
-    private String otp;
-    
-    @Column
-    private LocalDateTime expiryTime;
-    
-    @Column
+    private String vehicleType;
+
+    private String assignedArea;
+
     private String status;
+
+    private LocalDateTime createdDate;
 }
